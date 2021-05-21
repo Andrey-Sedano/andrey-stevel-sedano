@@ -283,3 +283,54 @@ create table actividad_planeacion(
 	constraint fk_acpr_acpl foreign key (id_actividad_proyecto) references actividad_proyecto (id),
 	constraint uk_actividad_planeacion unique (id_programacion_trimestre,id_actividad_proyecto)
 );
+
+
+27
+create table tipo_ambiente(
+	id int4 primary key,
+	tipo varchar(50) not null,
+	descripcion varchar(100)not null,
+	estado varchar(40) not null,
+	constraint uk_tipo_ambiente unique (tipo)
+);
+
+28
+create table sede(
+	id int4 primary key,
+	nombre_sede varchar(50)not null,
+	direccion varchar(400)not null,
+	estado varchar(40)not null,
+	constraint uk_sede unique (nombre_sede)
+);
+
+29
+create table ambiente(
+	id int4 primary key,
+	id_sede int4 not null,
+	numero_ambiente varchar(50)not null,
+	descripcion varchar(1000)not null,
+	estado varchar(40) not null,
+	limitacion varchar(40)not null,
+	id_tipo_ambiente int4 not null,
+	constraint fk_tiam_ambi foreign key (id_tipo_ambiente) references tipo_ambiente (id),
+	constraint fk_sede_ambi foreign key (id_sede) references sede (id),
+	constraint uk_ambiente unique (id_sede,numero_ambiente)	
+); 
+
+30
+create table limitacion_ambiente(
+	id int4 primary key,
+	id_resultado_aprendizaje int4 not null,
+	id_ambiente int4 not null,
+	constraint fk_ambi_liam foreign key (id_ambiente) references ambiente (id),
+	constraint fk_reap_liam foreign key (id_resultado_aprendizaje) references resultado_aprendizaje (id),
+	constraint uk_limitacion_ambiente unique (id_resultado_aprendizaje,id_ambiente)
+);
+
+
+
+
+
+
+
+
