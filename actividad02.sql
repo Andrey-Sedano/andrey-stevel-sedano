@@ -431,6 +431,116 @@ create table observacion_respuesta(
 	constraint uk_observacion_respuesta unique (numero_observacion,id_respuesta_grupo)
 );
 
+40
+create table year(
+	id int4 primary key,
+	number_year int4 not null,
+	estado varchar(40) not null,
+	constraint uk_year unique (number_year)
+);
+
+41
+create table area(
+	id int4 primary key,
+	nombre_area varchar(40)not null,
+	estado varchar(40)not null,
+	url_logo varchar(1000),
+	constraint uk_area unique (nombre_area)
+);
+
+42
+create table instructor(
+	id int4 primary key,
+	id_cliente int4 not null,
+	estado varchar(40)not null,
+	constraint fk_clien_inst foreign key (id_cliente) references cliente (id),
+	constraint uk_instructor unique (id_cliente)
+);
+
+43
+create table vinculacion(
+	id int4 primary key,
+	tipo_vinculacion varchar(40) not null,
+	horas int4 not null,
+	estado varchar(40)not null,
+	constraint uk_vinculacion unique (tipo_vinculacion)
+);
+
+44
+create table jornada_instructor(
+	id int4 primary key,
+	nombre_jornada varchar(80) not null,
+	descripcion varchar(200)not null,
+	estado varchar(40)not null,
+	constraint uk_nombre_jornada1 unique (nombre_jornada)
+);
+
+45
+create table area_instructor(
+	id int4 primary key,
+	id_area int4 not null,
+	id_instructor int4 not null,
+	estado varchar(40) not null,
+	constraint fk_intr_esin foreign key (id_instructor) references instructor (id),
+	constraint fk_area_esin foreign key (id_area) references area (id),
+	constraint uk_area_instructor unique (id_area,id_instructor)
+);
+
+46
+create table vinculacion_instructor(
+	id int4 primary key,
+	id_year int4 not null,
+	fecha_inicio date not null,
+	fecha_fin date not null,
+	id_vinculacion int4 not null,
+	id_instructor int4 not null,
+	constraint fk_year_vins foreign key (id_year) references year (id),
+	constraint fk_ins_vins foreign key (id_instructor) references instructor (id),
+	constraint fk_vinc_vins foreign key (id_vinculacion) references vinculacion (id),
+	constraint uk_vinculacion_instructor unique (id_year,fecha_inicio,fecha_fin,id_vinculacion,id_instructor)
+); 
+
+47
+create table disponibilidad_horaria(
+	id int4 primary key,
+	id_jornada_instructor int4 not null,
+	id_vinculacion_instructor int4 not null,
+	constraint fk_vins_diho foreign key (id_vinculacion_instructor) references vinculacion_instructor (id),
+	constraint fk_jorn_diho foreign key (id_jornada_instructor) references jornada_instructor (id),
+	constraint uk_disponibilidad_horaria unique (id_jornada_instructor,id_vinculacion_instructor)
+);
+
+48
+create table disponibilidad_competencia(
+	id int4 primary key,
+	id_competencia int4 not null,
+	id_vinculacion_instructor int4 not null,
+	constraint fk_comp_disco foreign key (id_competencia) references competencia (id),
+	constraint fk_vins_disco foreign key (id_vinculacion_instructor) references vinculacion_instructor (id),
+	constraint uk_disp_comp unique (id_competencia,id_vinculacion_instructor)
+);
+
+49
+create table dia(
+	id int4 primary key,
+	nombre_dia varchar(40) not null,
+	estado varchar(40)not null,
+	constraint uk_dia unique (nombre_dia)
+);
+
+50
+create table dia_jornada(
+	id int4 primary key,
+	id_jornada_instructores int4 not null,
+	id_dia int4 not null,
+	hora_inicio int4 not null,
+	hora_fin int4 not null,
+	constraint fk_join_diajo foreign key (id_jornada_instructores) references jornada_instructor (id),
+	constraint fk_dia_diajo foreign key (id_dia) references dia(id),
+	constraint uk_dia_jornada unique (id_jornada_instructores,id_dia,hora_inicio,hora_fin)
+);
+
+
 
 
 
