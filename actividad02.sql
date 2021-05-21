@@ -541,6 +541,58 @@ create table dia_jornada(
 );
 
 
+51
+create table modalidad(
+	id int4 primary key,
+	nombre_modalidad varchar(40) not null,
+	color varchar(50)not null,
+	estado varchar(40)not null,
+	constraint uk_modalidad unique (nombre_modalidad)
+);
+
+52
+create table trimestre_vigente(
+	id int4 primary key,
+	id_year int4 not null,
+	trimestre_programado int4 not null,
+	fecha_inicio date not null,
+	fecha_fin date not null,
+	estado varchar(40)not null,
+	constraint fk_year_trivig foreign key (id_year) references year (id),
+	constraint uk_trimestre_vigente unique (id_year,trimestre_programado)
+);
+
+53
+create table version_horario(
+	id int4 primary key,
+	numero_version varchar(40) not null,
+	id_trimestre_vigente int4 not null,
+	estado varchar(40)not null,
+	constraint fk_trvi_veho foreign key (id_trimestre_vigente) references trimestre_vigente (id),
+	constraint uk_version_horario unique (numero_version,id_trimestre_vigente)
+);
+
+54
+create table horario(
+	id int4 primary key,
+	hora_inicio time not null,
+	id_ficha_has_trimestre int4 not null,
+	id_instructor int4 not null,
+	id_dia int4 not null,
+	id_ambiente int4 not null,
+	id_version_horario int4 not null,
+	hora_fin time not null,
+	id_modalidad int4 not null,
+	constraint fk_dia_hora foreign key (id_dia) references dia (id),
+	constraint fk_fihtr_hora foreign key (id_ficha_has_trimestre) references ficha_has_trimestre (id),
+	constraint fk_ins_hora foreign key (id_instructor) references instructor (id),
+	constraint fk_amb_hora foreign key (id_ambiente) references ambiente (id),
+	constraint fk_veho_hora foreign key (id_version_horario) references version_horario (id),
+	constraint fk_moda_hora foreign key (id_modalidad) references modalidad (id),
+	constraint uk_horario unique (hora_inicio,id_ficha_has_trimestre,id_instructor,id_dia,id_ambiente,id_version_horario,hora_fin)
+);
+
+
 
 
 
