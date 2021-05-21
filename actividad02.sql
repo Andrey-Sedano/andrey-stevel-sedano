@@ -327,6 +327,111 @@ create table limitacion_ambiente(
 	constraint uk_limitacion_ambiente unique (id_resultado_aprendizaje,id_ambiente)
 );
 
+31
+create table lista_chequeo(
+	id int4 primary key,
+	id_programa int4 not null,
+	lista varchar(50) not null,
+	estado int4 not null,
+	constraint fk_prog_lich foreign key (id_programa) references programa (id),
+	constraint uk_lista unique (lista)
+);
+
+32
+create table valoracion(
+	id int4 primary key,
+	tipo_valoracion varchar(50)not null,
+	estado varchar(40)not null,
+	constraint uk_valoracion unique (tipo_valoracion)
+);
+
+33
+create table grupo_proyecto(
+	id int4 primary key,
+	id_ficha int4 not null,
+	numero_grupo int4 not null,
+	nombre_proyecto varchar(300)not null,
+	estado_grupo_proyecto varchar(40)not null,
+	constraint fk_fich_grup_proy foreign key (id_ficha) references ficha (id),
+	constraint uk_grupo_proyecto unique (id_ficha,numero_grupo)
+);
+
+34
+create table lista_ficha(
+	id int4 primary key,
+	id_ficha int4 not null,
+	id_lista_chequeo int4 not null,
+	estado varchar(40)not null,
+	constraint fk_lich_lifc_ foreign key (id_lista_chequeo) references lista_chequeo (id),
+	constraint fk_fic_lifi foreign key (id_ficha) references ficha (id),
+	constraint uk_lista_ficha unique (id_ficha,id_lista_chequeo)
+	
+);
+
+35
+create table observacion_general(
+	id int4 primary key,
+	numero int4 not null,
+	id_grupo_proyecto int4 not null,
+	observacion varchar(500)not null,
+	jurado varchar(500)not null,
+	fecha timestamp not null,
+	id_cliente int4 not null,
+	constraint fk_grpr_obge foreign key (id_grupo_proyecto) references grupo_proyecto (id),
+	constraint fk_clie_obge foreign key (id_cliente) references cliente (id),
+	constraint uk_observacion_general unique (numero,id_grupo_proyecto)
+);
+
+36
+create table integrantes_grupo(
+	id int4 primary key,
+	id_aprendiz int4 not null,
+	id_grupo_proyecto int4 not null,
+	constraint fk_apre_ingr foreign key (id_aprendiz) references aprendiz (id),
+	constraint fk_grpr_ingr foreign key (id_grupo_proyecto) references grupo_proyecto (id),
+	constraint uk_integrantes_grupo unique (id_aprendiz,id_grupo_proyecto)
+);
+
+37
+create table item_lista(
+	id int4 primary key,
+	id_lista_chequeo int4 not null,
+	numero_item int4 not null,
+	pregunta varchar(1000) not null,
+	id_resultado_aprendizaje int4 not null,
+	constraint fk_lich_itli foreign key (id_lista_chequeo) references lista_chequeo (id),
+	constraint fk_reap_itli foreign key (id_resultado_aprendizaje) references resultado_aprendizaje (id),
+	constraint uk_item_lista unique (id_lista_chequeo,numero_item)
+);
+
+38
+create table respuesta_grupo(
+	id int4 primary key,
+	id_item_lista int4 not null,
+	id_grupo_proyecto int4 not null,
+	id_valoracion int4 not null,
+	fecha timestamp not null,
+	constraint fk_grpr_regr foreign key (id_grupo_proyecto) references grupo_proyecto (id),
+	constraint fk_val_regr foreign key (id_valoracion) references valoracion (id),
+	constraint fk_itli_regr foreign key (id_item_lista) references item_lista (id),
+	constraint uk_respuesta_grupo unique (id_item_lista,id_grupo_proyecto)
+);
+
+39
+create table observacion_respuesta(
+	id int4 primary key,
+	numero_observacion int4 not null,
+	id_respuesta_grupo int4 not null,
+	observacion varchar(400)not null,
+	jurados varchar(400)not null,
+	fecha timestamp not null,
+	id_cliente int4 not null,
+	constraint fk_clie_obre foreign key (id_cliente) references cliente (id),
+	constraint fk_regr_obre foreign key (id_respuesta_grupo) references respuesta_grupo (id),
+	constraint uk_observacion_respuesta unique (numero_observacion,id_respuesta_grupo)
+);
+
+
 
 
 
